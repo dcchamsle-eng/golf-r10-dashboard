@@ -99,7 +99,19 @@
           "carry_dev_dist_avg_abs": 4.76,
           "total_avg": 105.52,
           "swing_tempo_avg": 4.7,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              82.5,
+              93.4,
+              96.4,
+              105.9,
+              94.9
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 6,
@@ -197,7 +209,23 @@
           "carry_dev_dist_avg_abs": 5.43,
           "total_avg": 113.54,
           "swing_tempo_avg": 4.76,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              105.8,
+              109.5,
+              111.0,
+              114.8,
+              116.3,
+              117.1,
+              110.1,
+              119.7,
+              114.3
+            ],
+            "control": [],
+            "n_approach": 5,
+            "n_outlier": 0
+          }
         },
         "샌드웨지": {
           "n": 10,
@@ -221,7 +249,17 @@
           "carry_dev_dist_avg_abs": 6.03,
           "total_avg": 66.28,
           "swing_tempo_avg": 4.24,
-          "n_speed_sanitized": 2
+          "n_speed_sanitized": 2,
+          "wedge_split": {
+            "full": [
+              83.7
+            ],
+            "control": [
+              72.3
+            ],
+            "n_approach": 7,
+            "n_outlier": 1
+          }
         }
       }
     },
@@ -254,7 +292,22 @@
           "carry_dev_dist_avg_abs": 11.82,
           "total_avg": 111.47,
           "swing_tempo_avg": 4.85,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              93.7,
+              89.2,
+              111.4,
+              104.5,
+              102.6,
+              97.9,
+              87.0,
+              109.1
+            ],
+            "control": [],
+            "n_approach": 1,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 73,
@@ -352,7 +405,16 @@
           "carry_dev_dist_avg_abs": 1.2,
           "total_avg": 23.15,
           "swing_tempo_avg": 2.12,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [],
+            "control": [
+              68.8,
+              76.3
+            ],
+            "n_approach": 13,
+            "n_outlier": 0
+          }
         }
       }
     },
@@ -610,7 +672,23 @@
           "carry_dev_dist_avg_abs": 5.9,
           "total_avg": 101.73,
           "swing_tempo_avg": 5.61,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              96.6,
+              95.8,
+              103.7,
+              89.3,
+              104.0,
+              103.0,
+              105.7,
+              90.1,
+              103.9
+            ],
+            "control": [],
+            "n_approach": 9,
+            "n_outlier": 0
+          }
         },
         "드라이버": {
           "n": 74,
@@ -675,7 +753,22 @@
           "carry_dev_dist_avg_abs": 2.47,
           "total_avg": 81.86,
           "swing_tempo_avg": 3.73,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              88.9,
+              99.1,
+              104.8,
+              94.6,
+              98.3,
+              92.9,
+              86.1,
+              93.0
+            ],
+            "control": [],
+            "n_approach": 8,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 53,
@@ -825,7 +918,24 @@
           "carry_dev_dist_avg_abs": 6.67,
           "total_avg": 107.45,
           "swing_tempo_avg": 6.53,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              93.0,
+              102.6,
+              89.9,
+              96.2,
+              104.9,
+              95.4,
+              99.4,
+              89.8,
+              96.8,
+              106.9
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "피칭웨지": {
           "n": 8,
@@ -849,7 +959,21 @@
           "carry_dev_dist_avg_abs": 8.57,
           "total_avg": 131.66,
           "swing_tempo_avg": 4.58,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              105.2,
+              115.6,
+              109.3,
+              125.6,
+              117.9,
+              122.0,
+              121.5
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "샌드웨지": {
           "n": 11,
@@ -873,7 +997,16 @@
           "carry_dev_dist_avg_abs": 2.77,
           "total_avg": 45.8,
           "swing_tempo_avg": 2.55,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              83.4,
+              84.2
+            ],
+            "control": [],
+            "n_approach": 8,
+            "n_outlier": 1
+          }
         },
         "4 하이브리드": {
           "n": 5,
@@ -982,7 +1115,20 @@
           "carry_dev_dist_avg_abs": 3.14,
           "total_avg": 95.51,
           "swing_tempo_avg": 5.22,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              96.3,
+              87.8,
+              101.7,
+              94.2,
+              88.0,
+              98.3
+            ],
+            "control": [],
+            "n_approach": 4,
+            "n_outlier": 0
+          }
         },
         "4 하이브리드": {
           "n": 7,
@@ -1102,7 +1248,18 @@
           "carry_dev_dist_avg_abs": 8.42,
           "total_avg": 120.48,
           "swing_tempo_avg": 4.89,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              127.1,
+              109.4,
+              119.9,
+              106.9
+            ],
+            "control": [],
+            "n_approach": 1,
+            "n_outlier": 0
+          }
         }
       }
     },
@@ -1196,7 +1353,22 @@
           "carry_dev_dist_avg_abs": 4.99,
           "total_avg": 91.82,
           "swing_tempo_avg": 3.42,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              99.9,
+              86.1,
+              89.0,
+              85.7,
+              93.4,
+              95.8,
+              84.6,
+              95.6
+            ],
+            "control": [],
+            "n_approach": 2,
+            "n_outlier": 0
+          }
         }
       }
     },
@@ -1229,7 +1401,27 @@
           "carry_dev_dist_avg_abs": 10.25,
           "total_avg": 101.26,
           "swing_tempo_avg": 4.96,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              80.7,
+              90.0,
+              96.2,
+              85.7,
+              96.9,
+              99.2,
+              113.3,
+              95.0,
+              114.7,
+              91.2,
+              96.5,
+              93.0,
+              95.6
+            ],
+            "control": [],
+            "n_approach": 9,
+            "n_outlier": 0
+          }
         },
         "드라이버": {
           "n": 103,
@@ -1333,7 +1525,28 @@
           "carry_dev_dist_avg_abs": 7.61,
           "total_avg": 97.78,
           "swing_tempo_avg": 5.76,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              83.0,
+              106.0,
+              95.9,
+              101.3,
+              91.8,
+              89.4,
+              103.5,
+              94.5,
+              80.9,
+              94.4,
+              108.6,
+              91.3,
+              81.2,
+              99.0
+            ],
+            "control": [],
+            "n_approach": 13,
+            "n_outlier": 0
+          }
         },
         "드라이버": {
           "n": 50,
@@ -1437,7 +1650,20 @@
           "carry_dev_dist_avg_abs": 8.32,
           "total_avg": 121.75,
           "swing_tempo_avg": 5.56,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              116.8,
+              100.7,
+              130.5,
+              114.9,
+              103.7,
+              110.2
+            ],
+            "control": [],
+            "n_approach": 3,
+            "n_outlier": 0
+          }
         },
         "3 아이언": {
           "n": 3,
@@ -1518,7 +1744,22 @@
           "carry_dev_dist_avg_abs": 3.18,
           "total_avg": 108.17,
           "swing_tempo_avg": 4.15,
-          "n_speed_sanitized": 2
+          "n_speed_sanitized": 2,
+          "wedge_split": {
+            "full": [
+              94.4,
+              102.6,
+              98.9,
+              103.3,
+              96.9,
+              95.8,
+              92.8,
+              93.1
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "샌드웨지": {
           "n": 11,
@@ -1542,7 +1783,22 @@
           "carry_dev_dist_avg_abs": 6.55,
           "total_avg": 95.8,
           "swing_tempo_avg": 2.52,
-          "n_speed_sanitized": 5
+          "n_speed_sanitized": 5,
+          "wedge_split": {
+            "full": [
+              81.3,
+              113.6,
+              85.7,
+              83.6,
+              88.3
+            ],
+            "control": [
+              78.4,
+              75.9
+            ],
+            "n_approach": 2,
+            "n_outlier": 0
+          }
         },
         "드라이버": {
           "n": 93,
@@ -1640,7 +1896,16 @@
           "carry_dev_dist_avg_abs": 2.48,
           "total_avg": 128.33,
           "swing_tempo_avg": 4.13,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              112.4,
+              124.2
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "4 아이언": {
           "n": 8,
@@ -1721,7 +1986,20 @@
           "carry_dev_dist_avg_abs": 3.01,
           "total_avg": 61.23,
           "swing_tempo_avg": 5.63,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              58.0,
+              55.9,
+              53.5,
+              59.5,
+              54.7,
+              73.2
+            ],
+            "control": [],
+            "n_approach": 3,
+            "n_outlier": 0
+          }
         },
         "샌드웨지": {
           "n": 25,
@@ -1745,7 +2023,20 @@
           "carry_dev_dist_avg_abs": 2.5,
           "total_avg": 46.0,
           "swing_tempo_avg": 3.73,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [],
+            "control": [
+              67.9,
+              68.4,
+              69.2,
+              67.3,
+              69.9,
+              77.7
+            ],
+            "n_approach": 19,
+            "n_outlier": 0
+          }
         },
         "갭웨지": {
           "n": 9,
@@ -1769,7 +2060,23 @@
           "carry_dev_dist_avg_abs": 7.35,
           "total_avg": 104.93,
           "swing_tempo_avg": 6.2,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              98.6,
+              100.0,
+              90.7,
+              101.0,
+              91.5,
+              100.5,
+              92.7,
+              105.5,
+              95.6
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "드라이버": {
           "n": 31,
@@ -1825,7 +2132,23 @@
           "carry_dev_dist_avg_abs": 10.68,
           "total_avg": 128.4,
           "swing_tempo_avg": 6.38,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              114.4,
+              115.0,
+              121.5,
+              123.9,
+              122.7,
+              121.1,
+              112.9,
+              119.6,
+              115.2
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 8,
@@ -1986,7 +2309,19 @@
           "carry_dev_dist_avg_abs": 4.4,
           "total_avg": 110.78,
           "swing_tempo_avg": 3.78,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              99.5,
+              105.8,
+              101.9,
+              105.4,
+              106.8
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "갭웨지": {
           "n": 3,
@@ -2010,7 +2345,16 @@
           "carry_dev_dist_avg_abs": 10.15,
           "total_avg": 93.07,
           "swing_tempo_avg": 5.63,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              93.9,
+              89.9
+            ],
+            "control": [],
+            "n_approach": 1,
+            "n_outlier": 0
+          }
         }
       }
     },
@@ -2043,7 +2387,21 @@
           "carry_dev_dist_avg_abs": 5.8,
           "total_avg": 75.12,
           "swing_tempo_avg": 3.14,
-          "n_speed_sanitized": 4
+          "n_speed_sanitized": 4,
+          "wedge_split": {
+            "full": [
+              57.3,
+              71.6,
+              63.6,
+              70.0,
+              72.8,
+              64.5,
+              63.3
+            ],
+            "control": [],
+            "n_approach": 2,
+            "n_outlier": 0
+          }
         },
         "샌드웨지": {
           "n": 8,
@@ -2067,7 +2425,22 @@
           "carry_dev_dist_avg_abs": 8.67,
           "total_avg": 85.16,
           "swing_tempo_avg": 4.11,
-          "n_speed_sanitized": 2
+          "n_speed_sanitized": 2,
+          "wedge_split": {
+            "full": [
+              83.4,
+              87.5
+            ],
+            "control": [
+              79.8,
+              77.6,
+              75.4,
+              76.5,
+              73.4
+            ],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         },
         "드라이버": {
           "n": 105,
@@ -2174,7 +2547,19 @@
           "carry_dev_dist_avg_abs": 6.5,
           "total_avg": 56.1,
           "swing_tempo_avg": 4.04,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              80.5,
+              81.1
+            ],
+            "control": [
+              66.2,
+              65.4
+            ],
+            "n_approach": 8,
+            "n_outlier": 0
+          }
         },
         "피칭웨지": {
           "n": 14,
@@ -2198,7 +2583,24 @@
           "carry_dev_dist_avg_abs": 6.68,
           "total_avg": 114.03,
           "swing_tempo_avg": 5.81,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              107.4,
+              119.8,
+              116.7,
+              101.9,
+              121.6,
+              101.0,
+              113.7,
+              109.6,
+              109.9,
+              115.5
+            ],
+            "control": [],
+            "n_approach": 4,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 40,
@@ -2311,7 +2713,18 @@
           "carry_dev_dist_avg_abs": 1.38,
           "total_avg": 36.89,
           "swing_tempo_avg": 3.46,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              67.8,
+              53.9,
+              62.7,
+              65.4
+            ],
+            "control": [],
+            "n_approach": 14,
+            "n_outlier": 0
+          }
         },
         "피칭웨지": {
           "n": 25,
@@ -2335,7 +2748,33 @@
           "carry_dev_dist_avg_abs": 10.87,
           "total_avg": 124.98,
           "swing_tempo_avg": 7.02,
-          "n_speed_sanitized": 4
+          "n_speed_sanitized": 4,
+          "wedge_split": {
+            "full": [
+              107.7,
+              102.2,
+              104.1,
+              121.0,
+              123.6,
+              124.9,
+              130.6,
+              106.9,
+              105.4,
+              92.9,
+              117.6,
+              123.0,
+              128.8,
+              126.8,
+              123.0,
+              110.5,
+              109.6,
+              107.6,
+              115.4
+            ],
+            "control": [],
+            "n_approach": 6,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 21,
@@ -2448,7 +2887,17 @@
           "carry_dev_dist_avg_abs": 2.37,
           "total_avg": 59.91,
           "swing_tempo_avg": 5.03,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              52.3,
+              63.3,
+              53.5
+            ],
+            "control": [],
+            "n_approach": 2,
+            "n_outlier": 0
+          }
         },
         "피칭웨지": {
           "n": 28,
@@ -2472,7 +2921,38 @@
           "carry_dev_dist_avg_abs": 11.08,
           "total_avg": 118.52,
           "swing_tempo_avg": 6.82,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              98.2,
+              97.0,
+              101.0,
+              102.1,
+              96.8,
+              99.4,
+              94.0,
+              112.6,
+              107.2,
+              111.1,
+              114.2,
+              127.8,
+              117.2,
+              113.0,
+              129.2,
+              122.1,
+              118.5,
+              130.5,
+              118.9,
+              118.1,
+              117.1,
+              126.4,
+              116.3,
+              113.3
+            ],
+            "control": [],
+            "n_approach": 4,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 15,
@@ -2577,7 +3057,20 @@
           "carry_dev_dist_avg_abs": 2.75,
           "total_avg": 66.1,
           "swing_tempo_avg": 4.35,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              60.8,
+              60.4,
+              54.1,
+              63.0,
+              57.6,
+              57.5
+            ],
+            "control": [],
+            "n_approach": 3,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 41,
@@ -2651,7 +3144,20 @@
           "carry_dev_dist_avg_abs": 5.86,
           "total_avg": 152.55,
           "swing_tempo_avg": 5.18,
-          "n_speed_sanitized": 4
+          "n_speed_sanitized": 4,
+          "wedge_split": {
+            "full": [
+              98.7,
+              112.5,
+              116.6,
+              102.9,
+              103.1,
+              99.2
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 4
+          }
         },
         "4 하이브리드": {
           "n": 3,
@@ -2699,7 +3205,15 @@
           "carry_dev_dist_avg_abs": 0.98,
           "total_avg": 23.34,
           "swing_tempo_avg": 1.83,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [],
+            "control": [
+              70.6
+            ],
+            "n_approach": 14,
+            "n_outlier": 0
+          }
         },
         "3 아이언": {
           "n": 3,
@@ -2795,7 +3309,20 @@
           "carry_dev_dist_avg_abs": 3.92,
           "total_avg": 82.83,
           "swing_tempo_avg": 3.75,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              94.1,
+              93.3,
+              132.2,
+              130.7,
+              119.8,
+              129.8
+            ],
+            "control": [],
+            "n_approach": 7,
+            "n_outlier": 0
+          }
         }
       }
     },
@@ -2828,7 +3355,18 @@
           "carry_dev_dist_avg_abs": 1.8,
           "total_avg": 56.74,
           "swing_tempo_avg": 3.37,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [],
+            "control": [
+              67.1,
+              73.4,
+              71.2,
+              78.0
+            ],
+            "n_approach": 17,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 23,
@@ -2950,7 +3488,27 @@
           "carry_dev_dist_avg_abs": 9.91,
           "total_avg": 125.83,
           "swing_tempo_avg": 5.34,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              100.5,
+              100.9,
+              115.2,
+              102.1,
+              106.4,
+              107.0,
+              128.8,
+              129.9,
+              127.9,
+              122.7,
+              132.4,
+              126.9,
+              117.8
+            ],
+            "control": [],
+            "n_approach": 14,
+            "n_outlier": 1
+          }
         }
       }
     },
@@ -2983,7 +3541,32 @@
           "carry_dev_dist_avg_abs": 3.1,
           "total_avg": 66.23,
           "swing_tempo_avg": 3.48,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              82.6,
+              88.1,
+              81.3,
+              87.8,
+              84.7
+            ],
+            "control": [
+              75.0,
+              78.5,
+              79.5,
+              69.7,
+              68.7,
+              65.4,
+              66.2,
+              74.9,
+              71.1,
+              66.0,
+              73.5,
+              69.7
+            ],
+            "n_approach": 30,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 7,
@@ -3092,7 +3675,21 @@
           "carry_dev_dist_avg_abs": 4.74,
           "total_avg": 117.99,
           "swing_tempo_avg": 4.17,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              103.1,
+              110.8,
+              115.2,
+              111.3,
+              107.3,
+              100.5,
+              108.9
+            ],
+            "control": [],
+            "n_approach": 0,
+            "n_outlier": 0
+          }
         }
       }
     },
@@ -3125,7 +3722,18 @@
           "carry_dev_dist_avg_abs": 2.13,
           "total_avg": 50.79,
           "swing_tempo_avg": 3.56,
-          "n_speed_sanitized": 1
+          "n_speed_sanitized": 1,
+          "wedge_split": {
+            "full": [
+              90.9
+            ],
+            "control": [
+              73.8,
+              77.3
+            ],
+            "n_approach": 11,
+            "n_outlier": 0
+          }
         },
         "7 아이언": {
           "n": 25,
@@ -3223,7 +3831,29 @@
           "carry_dev_dist_avg_abs": 10.88,
           "total_avg": 116.43,
           "swing_tempo_avg": 5.38,
-          "n_speed_sanitized": 0
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              112.9,
+              104.7,
+              102.3,
+              116.4,
+              105.9,
+              107.6,
+              109.7,
+              113.2,
+              102.3,
+              119.1,
+              118.7,
+              113.3,
+              110.5,
+              117.3,
+              138.1
+            ],
+            "control": [],
+            "n_approach": 4,
+            "n_outlier": 0
+          }
         },
         "갭웨지": {
           "n": 6,
@@ -3247,7 +3877,171 @@
           "carry_dev_dist_avg_abs": 5.82,
           "total_avg": 102.65,
           "swing_tempo_avg": 5.4,
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              93.1,
+              92.8,
+              92.6,
+              92.7
+            ],
+            "control": [],
+            "n_approach": 2,
+            "n_outlier": 0
+          }
+        }
+      }
+    },
+    "2026-09-17_2026. 9. 17. 19:51:16": {
+      "date": "2026-09-17",
+      "total_shots": 53,
+      "time_start": "2026. 9. 17. 19:51:16",
+      "time_end": "2026. 9. 17. 20:15:29",
+      "source_file": "DrivingRange-2026-09-17 11_16_02 +0000.csv",
+      "clubs": {
+        "드라이버": {
+          "n": 16,
+          "n_clean": 16,
+          "n_mishit": 0,
+          "n_path_valid": 7,
+          "club_speed_avg": 42.39,
+          "attack_angle_avg": -1.79,
+          "club_path_avg": -6.1,
+          "club_path_std": 10.14,
+          "club_face_avg": -0.46,
+          "face_path_gap_avg": 5.64,
+          "ball_speed_avg": 62.23,
+          "smash_avg": 1.47,
+          "launch_angle_avg": 16.19,
+          "backspin_avg": 2534.13,
+          "sidespin_avg": 24.51,
+          "carry_avg": 207.77,
+          "carry_median": 208.09,
+          "carry_std": 6.06,
+          "carry_dev_dist_avg_abs": 18.06,
+          "total_avg": 224.01,
+          "swing_tempo_avg": 3.91,
+          "n_speed_sanitized": 5,
+          "termination_flags": [
+            {
+              "start_time": "2026. 9. 17. 19:51:16",
+              "end_time": "2026. 9. 17. 19:51:59",
+              "len": 3
+            }
+          ],
+          "path_in_target_rate": 0.143
+        },
+        "샌드웨지": {
+          "n": 22,
+          "n_clean": 18,
+          "n_mishit": 4,
+          "n_path_valid": 13,
+          "club_speed_avg": 24.63,
+          "attack_angle_avg": -1.97,
+          "club_path_avg": -9.44,
+          "club_path_std": 13.19,
+          "club_face_avg": -3.18,
+          "face_path_gap_avg": 6.26,
+          "ball_speed_avg": 24.83,
+          "smash_avg": 1.02,
+          "launch_angle_avg": 42.31,
+          "backspin_avg": 2380.17,
+          "sidespin_avg": -306.41,
+          "carry_avg": 53.99,
+          "carry_median": 57.53,
+          "carry_std": 23.57,
+          "carry_dev_dist_avg_abs": 2.21,
+          "total_avg": 61.86,
+          "swing_tempo_avg": 4.37,
+          "n_speed_sanitized": 0,
+          "wedge_split": {
+            "full": [
+              84.8,
+              80.4,
+              81.7,
+              82.3
+            ],
+            "control": [
+              68.3,
+              66.4,
+              68.0,
+              75.2
+            ],
+            "n_approach": 14,
+            "n_outlier": 0
+          }
+        },
+        "7 아이언": {
+          "n": 4,
+          "n_clean": 4,
+          "n_mishit": 0,
+          "n_path_valid": 3,
+          "club_speed_avg": 36.37,
+          "attack_angle_avg": -8.44,
+          "club_path_avg": -12.23,
+          "club_path_std": 5.84,
+          "club_face_avg": 0.54,
+          "face_path_gap_avg": 12.76,
+          "ball_speed_avg": 47.95,
+          "smash_avg": 1.32,
+          "launch_angle_avg": 19.56,
+          "backspin_avg": 5260.17,
+          "sidespin_avg": 194.12,
+          "carry_avg": 137.81,
+          "carry_median": 138.18,
+          "carry_std": 7.28,
+          "carry_dev_dist_avg_abs": 4.63,
+          "total_avg": 147.58,
+          "swing_tempo_avg": 6.53,
           "n_speed_sanitized": 0
+        },
+        "4 하이브리드": {
+          "n": 6,
+          "n_clean": 6,
+          "n_mishit": 0,
+          "n_path_valid": 6,
+          "club_speed_avg": 37.26,
+          "attack_angle_avg": -1.74,
+          "club_path_avg": -0.89,
+          "club_path_std": 8.61,
+          "club_face_avg": 1.67,
+          "face_path_gap_avg": 2.55,
+          "ball_speed_avg": 53.66,
+          "smash_avg": 1.44,
+          "launch_angle_avg": 18.35,
+          "backspin_avg": 3228.27,
+          "sidespin_avg": -42.45,
+          "carry_avg": 165.0,
+          "carry_median": 162.57,
+          "carry_std": 8.69,
+          "carry_dev_dist_avg_abs": 11.05,
+          "total_avg": 183.27,
+          "swing_tempo_avg": 7.3,
+          "n_speed_sanitized": 0
+        },
+        "3 아이언": {
+          "n": 5,
+          "n_clean": 5,
+          "n_mishit": 0,
+          "n_path_valid": 2,
+          "club_speed_avg": 38.61,
+          "attack_angle_avg": -3.03,
+          "club_path_avg": -20.0,
+          "club_path_std": 0.0,
+          "club_face_avg": 7.48,
+          "face_path_gap_avg": 27.48,
+          "ball_speed_avg": 52.66,
+          "smash_avg": 1.36,
+          "launch_angle_avg": 19.22,
+          "backspin_avg": 2988.57,
+          "sidespin_avg": -238.25,
+          "carry_avg": 165.36,
+          "carry_median": 166.89,
+          "carry_std": 8.7,
+          "carry_dev_dist_avg_abs": 15.07,
+          "total_avg": 180.49,
+          "swing_tempo_avg": 4.38,
+          "n_speed_sanitized": 2
         }
       }
     }
@@ -3275,6 +4069,7 @@
     "DrivingRange-2026-08-15 12_21_24 +0000.csv",
     "DrivingRange-2026-08-17 07_10_19 +0000.csv",
     "DrivingRange-2026-08-22 08_47_48 +0000.csv",
-    "DrivingRange-2026-09-06 02_21_34 +0000.csv"
+    "DrivingRange-2026-09-06 02_21_34 +0000.csv",
+    "DrivingRange-2026-09-17 11_16_02 +0000.csv"
   ]
 }

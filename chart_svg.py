@@ -46,6 +46,11 @@ def _select_label_indices(pts, band):
     return idx
 
 
+def _fmt(value_fmt, value):
+    """value_fmt는 format 문자열 또는 값을 받아 문자열을 돌려주는 함수(예: 경로 L/R 표기)."""
+    return value_fmt(value) if callable(value_fmt) else value_fmt.format(value)
+
+
 def _date_label(svg, x, y, text, rotate):
     if rotate:
         svg.append(
@@ -103,7 +108,7 @@ def line_chart(points, y_min, y_max, band=None, band_label="", value_fmt="{:.1f}
         svg.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="var(--series-1)" />')
         if i in label_idx:
             label_y = y - 10 if y > PAD_TOP + 20 else y + 18
-            svg.append(f'<text x="{x:.1f}" y="{label_y:.1f}" text-anchor="middle" class="value-label">{value_fmt.format(value)}</text>')
+            svg.append(f'<text x="{x:.1f}" y="{label_y:.1f}" text-anchor="middle" class="value-label">{_fmt(value_fmt, value)}</text>')
         date_text = label if not note else f"{label}({note})"
         date_y = HEIGHT - PAD_BOTTOM + (14 if not rotate else 12)
         _date_label(svg, x, date_y, date_text, rotate)
@@ -112,8 +117,12 @@ def line_chart(points, y_min, y_max, band=None, band_label="", value_fmt="{:.1f}
     return _wrap_scroll("\n".join(svg), width)
 
 
-def bar_chart(points, y_min, y_max, value_fmt="{:.1f}", aria_label="", ref_line=None):
-    """points: [(date_label, value, note)]. ref_line: optional (value, label) for a dashed threshold line."""
+def bar_chart(points, y_min, y_max, value_fmt="{:.1f}", aria_label="", ref_line=None,
+              label_all=False, overlay_fmt=None):
+    """points: [(date_label, value, note)] 또는 (date_label, value, note, overlay_value).
+    ref_line: optional (value, label) for a dashed threshold line.
+    label_all: 모든 막대에 값 라벨 표시(막대마다 표본 수가 달라 개별 값을 읽어야 하는 차트용).
+    overlay_value가 있으면 막대 위에 보조 라인(예: 최근 3세션 합산 재현율)을 겹쳐 그린다."""
     pts = [p for p in points if p[1] is not None]
     if not pts:
         return "<p style='color:var(--text-muted);font-size:13px'>데이터 없음</p>"
@@ -127,7 +136,7 @@ def bar_chart(points, y_min, y_max, value_fmt="{:.1f}", aria_label="", ref_line=
     plot_w = width - PAD_LEFT - PAD_RIGHT
     slot_w = plot_w / n
     bar_w = min(60, slot_w * 0.55)
-    label_idx = _select_label_indices(pts, None)
+    label_idx = set(range(n)) if label_all else _select_label_indices([p[:3] for p in pts], None)
 
     def y_of(v):
         frac = (y_max - v) / (y_max - y_min)
@@ -147,7 +156,9 @@ def bar_chart(points, y_min, y_max, value_fmt="{:.1f}", aria_label="", ref_line=
     svg.append(f'<line x1="{PAD_LEFT}" y1="{pad_top}" x2="{PAD_LEFT}" y2="{height-pad_bottom}" class="baseline" />')
     svg.append(f'<line x1="{PAD_LEFT}" y1="{height-pad_bottom}" x2="{width-PAD_RIGHT}" y2="{height-pad_bottom}" class="baseline" />')
 
-    for i, (label, value, note) in enumerate(pts):
+    overlay = []
+    for i, p in enumerate(pts):
+        label, value, note = p[:3]
         cx = PAD_LEFT + slot_w * (i + 0.5)
         y_top = y_of(value)
         bar_h = (height - pad_bottom) - y_top
@@ -156,10 +167,24 @@ def bar_chart(points, y_min, y_max, value_fmt="{:.1f}", aria_label="", ref_line=
             f'fill="var(--series-1)" rx="3" />'
         )
         if i in label_idx:
-            svg.append(f'<text x="{cx:.1f}" y="{y_top-6:.1f}" text-anchor="middle" class="value-label">{value_fmt.format(value)}</text>')
+            svg.append(f'<text x="{cx:.1f}" y="{y_top-6:.1f}" text-anchor="middle" class="value-label">{_fmt(value_fmt, value)}</text>')
         date_text = label if not note else f"{label}({note})"
         date_y = height - pad_bottom + (14 if not rotate else 12)
         _date_label(svg, cx, date_y, date_text, rotate)
+        if len(p) > 3 and p[3] is not None:
+            overlay.append((cx, y_of(p[3]), p[3]))
+
+    if overlay:
+        if len(overlay) > 1:
+            poly = " ".join(f"{x:.1f},{y:.1f}" for x, y, _ in overlay)
+            svg.append(f'<polyline points="{poly}" fill="none" stroke="var(--series-2)" stroke-width="2" />')
+        for x, y, _ in overlay:
+            svg.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3" fill="var(--series-2)" />')
+        x, y, v = overlay[-1]
+        svg.append(
+            f'<text x="{x+8:.1f}" y="{y+4:.1f}" class="value-label" style="fill:var(--series-2)">'
+            f'{_fmt(overlay_fmt or value_fmt, v)}</text>'
+        )
 
     svg.append("</svg>")
     return _wrap_scroll("\n".join(svg), width)

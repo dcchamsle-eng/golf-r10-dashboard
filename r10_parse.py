@@ -44,6 +44,48 @@ CLUB_SPEED_CEILING = {
 }
 DEFAULT_CLUB_SPEED_CEILING = 50
 
+# 웨지 기준 거리표(사용자 제공, 2026-09-24). P=피칭웨지, 50도=갭웨지, 56도=샌드웨지, 60도=로브웨지.
+# full: 풀샷 캐리 범위(m), control: 컨트롤샷 캐리(m, 없으면 None).
+# 짧은 웨지 샷은 미스샷이 아니라 어프로치 연습이므로 40% 미스샷 필터와 별개로 샷 단위 분류한다.
+WEDGE_REFERENCE = {
+    "피칭웨지": {"full": (115, 115), "control": None},
+    "갭웨지": {"full": (100, 105), "control": None},
+    "샌드웨지": {"full": (85, 90), "control": 75},
+    "로브웨지": {"full": (65, 65), "control": None},
+}
+WEDGE_CONTROL_MARGIN = 10   # 컨트롤 하한 = 컨트롤 기준 - 10m
+WEDGE_FULL_RATIO = 0.8      # 컨트롤 기준이 없으면 풀샷 하한 = 풀샷 기준 하단의 80%
+WEDGE_OUTLIER_RATIO = 1.3   # 풀샷 기준 상단의 130% 초과 = 클럽 태깅 오류로 보고 제외
+
+
+def wedge_bands(club):
+    """(풀샷 하한, 컨트롤 하한 또는 None, 이상치 상한). 풀샷 하한은 컨트롤 기준이 있으면
+    컨트롤과 풀샷 하단의 중간, 없으면 풀샷 하단의 80%."""
+    ref = WEDGE_REFERENCE[club]
+    full_lo, full_hi = ref["full"]
+    if ref["control"] is not None:
+        return (ref["control"] + full_lo) / 2, ref["control"] - WEDGE_CONTROL_MARGIN, full_hi * WEDGE_OUTLIER_RATIO
+    return full_lo * WEDGE_FULL_RATIO, None, full_hi * WEDGE_OUTLIER_RATIO
+
+
+def wedge_split(club, all_shots):
+    """웨지 샷을 풀샷/컨트롤/어프로치/이상치로 분류. 세션 간 합산 중앙값을 낼 수 있게 캐리 목록을 남긴다."""
+    full_min, control_min, outlier_max = wedge_bands(club)
+    full, control, n_approach, n_outlier = [], [], 0, 0
+    for s in all_shots:
+        c = s["carry"]
+        if c is None:
+            continue
+        if c > outlier_max:
+            n_outlier += 1
+        elif c >= full_min:
+            full.append(round(c, 1))
+        elif control_min is not None and c >= control_min:
+            control.append(round(c, 1))
+        else:
+            n_approach += 1
+    return {"full": full, "control": control, "n_approach": n_approach, "n_outlier": n_outlier}
+
 
 def _to_float(v):
     v = v.strip()
@@ -205,6 +247,8 @@ def parse_session(csv_path):
         if club == "드라이버":
             cs["termination_flags"] = termination_flags(cs["_clean_shots"])
             cs["path_in_target_rate"] = path_in_target_rate(cs["_clean_shots"], DRIVER_PATH_TARGET)
+        if club in WEDGE_REFERENCE:
+            cs["wedge_split"] = wedge_split(club, shots)
         del cs["_clean_shots"]
         clubs[club] = cs
 

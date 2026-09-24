@@ -10,6 +10,7 @@ import hashlib
 import hmac
 import json
 import os
+import statistics as st
 import sys
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from chart_svg import line_chart, bar_chart
 from r10_parse import (
     DRIVER_PATH_TARGET, DRIVER_BACKSPIN_TARGET, IRON_FACE_PATH_GAP_TARGET,
     IRON_FACE_PATH_GAP_BASELINE, DRIVER_REPRO_THRESHOLD,
+    WEDGE_REFERENCE, WEDGE_CONTROL_MARGIN, WEDGE_FULL_RATIO, WEDGE_OUTLIER_RATIO, wedge_bands,
 )
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -59,6 +61,15 @@ def fmt_ko_date(d):
     return f"{int(m)}/{int(day)}"
 
 
+def fmt_lr(v):
+    """헤드 경로 표기 통일: R10 값은 +가 R(인투아웃), -가 L(아웃투인). 부호 대신 방향 글자만 쓴다."""
+    if v is None:
+        return "-"
+    if round(abs(v), 1) == 0:
+        return "0.0"
+    return f"{abs(v):.1f}{'R' if v >= 0 else 'L'}"
+
+
 def status_badge(kind, text):
     return f'<span class="badge {kind}"><span class="dot"></span>{text}</span>'
 
@@ -74,10 +85,12 @@ def build_overview_tiles(sessions):
     driver_sessions = [s for s in sessions if "드라이버" in s["clubs"]]
     if driver_sessions:
         latest = max(driver_sessions, key=lambda s: s["date"])
-        path_avg = latest["clubs"]["드라이버"]["club_path_avg"]
-        path_txt = f"{abs(path_avg):.1f}{'R' if path_avg >= 0 else 'L'}" if path_avg is not None else "-"
+        path_txt = fmt_lr(latest["clubs"]["드라이버"]["club_path_avg"])
+        latest_flags = len(latest["clubs"]["드라이버"].get("termination_flags", []))
+        latest_date = fmt_ko_date(latest["date"])
     else:
         path_txt = "-"
+        latest_flags, latest_date = 0, "-"
 
     flag_count = sum(
         len(s["clubs"].get("드라이버", {}).get("termination_flags", [])) for s in sessions
@@ -88,7 +101,7 @@ def build_overview_tiles(sessions):
     <div class="tile"><div class="label">세션</div><div class="value">{len(sessions)}회</div><div class="sub">{date_range}</div></div>
     <div class="tile"><div class="label">총 샷</div><div class="value">{total_shots}구</div><div class="sub">클린 샷 {total_clean}구</div></div>
     <div class="tile"><div class="label">최근 드라이버 헤드경로</div><div class="value">{path_txt}</div><div class="sub">정착구간 {DRIVER_PATH_TARGET[0]}~{DRIVER_PATH_TARGET[1]}R</div></div>
-    <div class="tile"><div class="label">후반 피로 신호</div><div class="value">{flag_count}건</div><div class="sub">종료 조건(3연속) 누적 감지</div></div>
+    <div class="tile"><div class="label">후반 피로 신호 (최근 세션 {latest_date})</div><div class="value">{latest_flags}건</div><div class="sub">종료 조건(3연속) · 최근 {len(sessions)}회 누적 {flag_count}건</div></div>
   </div>"""
 
 
@@ -133,15 +146,28 @@ def build_driver_trend(sessions):
         (fmt_ko_date(s["date"]), s["clubs"]["드라이버"]["club_path_std"], note_for_path(s, s["clubs"]["드라이버"]))
         for s in driver_sessions
     ]
-    repro_pts = [
-        (
+    # 재현율: 막대마다 "구간 내 샷수/경로표본수"를 붙이고, 세션당 표본이 작아 들쭉날쭉하므로
+    # 최근 3세션의 경로표본을 합쳐 계산한 재현율을 보조 라인으로 겹친다(합산 표본 5개 미만이면 생략).
+    def path_hits(club):
+        rate, n_valid = club.get("path_in_target_rate"), club.get("n_path_valid", 0)
+        if rate is None or not n_valid:
+            return 0, 0
+        return round(rate * n_valid), n_valid
+
+    repro_pts = []
+    for i, s in enumerate(driver_sessions):
+        club = s["clubs"]["드라이버"]
+        hits, n_valid = path_hits(club)
+        window = [path_hits(w["clubs"]["드라이버"]) for w in driver_sessions[max(0, i - 2):i + 1]]
+        w_hits, w_n = sum(h for h, _ in window), sum(n for _, n in window)
+        pooled = w_hits / w_n * 100 if w_n >= 5 else None
+        note = f"{hits}/{n_valid}" + (" 참고용" if n_valid < 5 else "")
+        repro_pts.append((
             fmt_ko_date(s["date"]),
-            s["clubs"]["드라이버"]["path_in_target_rate"] * 100
-            if s["clubs"]["드라이버"].get("path_in_target_rate") is not None else None,
-            note_for_path(s, s["clubs"]["드라이버"]),
-        )
-        for s in driver_sessions
-    ]
+            club["path_in_target_rate"] * 100 if club.get("path_in_target_rate") is not None else None,
+            note,
+            pooled,
+        ))
     speed_pts = [
         (fmt_ko_date(s["date"]), s["clubs"]["드라이버"]["club_speed_avg"], note_for(s, s["clubs"]["드라이버"]))
         for s in driver_sessions
@@ -179,7 +205,7 @@ def build_driver_trend(sessions):
     path_chart = line_chart(
         path_pts, path_min, path_max, band=DRIVER_PATH_TARGET,
         band_label=f"목표 {DRIVER_PATH_TARGET[0]}~{DRIVER_PATH_TARGET[1]}R",
-        value_fmt="{:.1f}R", aria_label="드라이버 헤드 경로 평균 추이",
+        value_fmt=fmt_lr, aria_label="드라이버 헤드 경로 평균 추이",
     )
     backspin_chart = line_chart(
         backspin_pts, bs_min, bs_max, band=DRIVER_BACKSPIN_TARGET,
@@ -192,12 +218,13 @@ def build_driver_trend(sessions):
     )
     std_chart = bar_chart(
         std_pts, 0, std_max,
-        value_fmt="{:.1f}R", aria_label="드라이버 헤드 경로 표준편차 추이",
+        value_fmt="{:.1f}°", aria_label="드라이버 헤드 경로 표준편차 추이",
     )
     repro_chart = bar_chart(
         repro_pts, 0, 100,
         value_fmt="{:.0f}%", aria_label="드라이버 헤드 경로 정착구간 재현율 추이",
         ref_line=(DRIVER_REPRO_THRESHOLD * 100, f"감각 생존 기준 {int(DRIVER_REPRO_THRESHOLD*100)}%"),
+        label_all=True,
     )
     speed_chart = line_chart(
         speed_pts, speed_min, speed_max,
@@ -231,13 +258,19 @@ def build_driver_trend(sessions):
             f"경로결측률 높은 세션(샷수는 충분했으나 R10이 경로를 못 잡음): {', '.join(low_path_high_n)}",
         ))
 
-    repro_vals = [v for _, v, _ in repro_pts if v is not None]
+    repro_vals = [p[1] for p in repro_pts if p[1] is not None]
     below_thresh = [v for v in repro_vals if v < DRIVER_REPRO_THRESHOLD * 100]
     repro_badges = [status_badge(
         "good" if not below_thresh else "warning",
         f"재현율 {int(DRIVER_REPRO_THRESHOLD*100)}% 미만 세션 {len(below_thresh)}/{len(repro_vals)}"
         f" — 평균이 구간 안이어도 샷별 재현율은 낮을 수 있음",
     )]
+    latest_pooled = next((p[3] for p in reversed(repro_pts) if p[3] is not None), None)
+    if latest_pooled is not None:
+        repro_badges.append(status_badge(
+            "good" if latest_pooled >= DRIVER_REPRO_THRESHOLD * 100 else "warning",
+            f"최근 3세션 합산 재현율 {latest_pooled:.0f}%",
+        ))
 
     return f"""
     <div class="card">
@@ -248,7 +281,8 @@ def build_driver_trend(sessions):
     <div class="card">
       <h3>드라이버 — 정착구간 재현율 (샷별로 몇 %가 2~6R 안에 들어왔는지)</h3>
       <p class="section-desc">평균이 구간 안이어도 샷마다 들쭉날쭉하면 일관성은 낮은 것 — 훈련일지 "10구 중 6개 이상 = 감각 생존" 기준선을 점선으로 표시.
-      R10이 경로 데이터를 못 잡는 샷이 흔해(전체 이력 기준 드라이버 약 50%) 표본이 5개 미만인 세션은 "경로표본 N개"로 표시되니 그런 세션의 재현율은 참고만 할 것.</p>
+      R10이 경로 데이터를 못 잡는 샷이 흔해(전체 이력 기준 드라이버 약 50%) 날짜 옆에 "구간 내 샷수/경로표본수"를 표시하고, 표본 5개 미만 세션은 "참고용"으로 표시.
+      <span style="color:var(--series-2);font-weight:600">주황 라인</span>은 최근 3세션의 경로표본을 합쳐 계산한 재현율(합산 표본 5개 이상일 때만) — 세션 하나의 흔들림보다 추세를 볼 때 쓸 것.</p>
       {repro_chart}
       <div class="badge-row">{''.join(repro_badges)}</div>
     </div>
@@ -313,22 +347,36 @@ def build_iron_gap_section(sessions):
     )
     if not iron_sessions:
         return ""
-    rows = "".join(
-        f"<tr><td>{s['date']}</td><td>{s['clubs']['7 아이언']['face_path_gap_avg']:.1f}°</td>"
-        f"<td>{s['clubs']['7 아이언']['n_clean']}/{s['clubs']['7 아이언']['n']}</td></tr>"
-        for s in iron_sessions if s['clubs']['7 아이언']['face_path_gap_avg'] is not None
-    )
+    # 갭은 페이스·경로가 둘 다 잡힌 샷으로만 계산되므로 표본 판정도 경로표본 수 기준(드라이버와 동일).
+    # 관찰 전용 항목이라 판정은 하지 않고 표본 경고와 목표 구간 표시만 한다.
+    lo, hi = IRON_FACE_PATH_GAP_TARGET
+    rows = []
+    for s in iron_sessions:
+        c = s["clubs"]["7 아이언"]
+        gap = c["face_path_gap_avg"]
+        if gap is None:
+            continue
+        n_path = c.get("n_path_valid", c["n_clean"])
+        low_n = n_path < 5
+        n_txt = f"{n_path}개" + (" (표본부족 · 참고용)" if low_n else "")
+        in_band = status_badge("good", "구간 내") if lo <= gap <= hi and not low_n else ""
+        muted = " class='muted-row'" if low_n else ""
+        rows.append(
+            f"<tr{muted}><td>{s['date']}</td><td>{gap:.1f}°</td><td>{in_band}</td>"
+            f"<td class='n-note'>{n_txt}</td><td>{c['n_clean']}/{c['n']}</td></tr>"
+        )
+    rows = "".join(rows)
     return f"""
   <div class="section">
     <h2>관찰 항목 — 7번 아이언 페이스-궤도 갭</h2>
     <p class="section-desc">0708 기준선 {IRON_FACE_PATH_GAP_BASELINE[0]}~{IRON_FACE_PATH_GAP_BASELINE[1]}° →
     장기적으로 {IRON_FACE_PATH_GAP_TARGET[0]}~{IRON_FACE_PATH_GAP_TARGET[1]}° 수렴 관찰 중
-    (개입 없이 관찰만, 아이언은 성역).</p>
+    (개입 없이 관찰만, 아이언은 성역). 경로표본 5개 미만 세션은 흐리게 표시 — 그날 값으로 판단하지 말 것.</p>
     <div class="table-scroll">
       <table>
-        <thead><tr><th>세션</th><th>페이스-궤도 갭</th><th>클린 샷수</th></tr></thead>
+        <thead><tr><th>세션</th><th>페이스-궤도 갭</th><th>목표 {lo}~{hi}°</th><th>경로표본</th><th>클린 샷수</th></tr></thead>
         <tbody>
-          <tr><td>0708 기준선</td><td>{IRON_FACE_PATH_GAP_BASELINE[0]}~{IRON_FACE_PATH_GAP_BASELINE[1]}°</td><td>-</td></tr>
+          <tr><td>0708 기준선</td><td>{IRON_FACE_PATH_GAP_BASELINE[0]}~{IRON_FACE_PATH_GAP_BASELINE[1]}°</td><td></td><td>-</td><td>-</td></tr>
           {rows}
         </tbody>
       </table>
@@ -337,7 +385,7 @@ def build_iron_gap_section(sessions):
 
 
 CLUB_ORDER = ["드라이버", "3 우드", "5 우드", "3 하이브리드", "4 하이브리드", "5 하이브리드",
-              "4 아이언", "5 아이언", "6 아이언", "7 아이언", "8 아이언", "9 아이언",
+              "3 아이언", "4 아이언", "5 아이언", "6 아이언", "7 아이언", "8 아이언", "9 아이언",
               "피칭웨지", "갭웨지", "샌드웨지", "로브웨지"]
 
 
@@ -345,6 +393,127 @@ def sort_clubs(club_dict):
     known = [c for c in CLUB_ORDER if c in club_dict]
     unknown = [c for c in club_dict if c not in CLUB_ORDER]
     return known + unknown
+
+
+CARRY_TABLE_SESSIONS = 5  # 클럽별 캐리표: 클럽마다 그 클럽을 친 최근 N세션을 합산
+
+
+def build_carry_table(sessions):
+    """클럽별 캐리표. 세션 요약값만 누적돼 있어 샷 단위 중앙값 대신 클린 샷수 가중평균,
+    세션 중앙값의 범위, 세션 내 표준편차의 가중평균을 보여준다."""
+    by_club = {}
+    for s in sorted(sessions, key=lambda s: (s["date"], s["time_start"])):
+        for club, c in s["clubs"].items():
+            if c.get("carry_avg") is not None and c.get("n_clean", 0) > 0:
+                by_club.setdefault(club, []).append((s["date"], c))
+
+    rows = []
+    for club in sort_clubs(by_club):
+        if club in WEDGE_REFERENCE:  # 웨지는 어프로치 샷이 섞여 있어 아래 웨지 거리표에서 샷 단위로 따로 본다
+            continue
+        recent = by_club[club][-CARRY_TABLE_SESSIONS:]
+        n_total = sum(c["n_clean"] for _, c in recent)
+        avg = sum(c["carry_avg"] * c["n_clean"] for _, c in recent) / n_total
+        medians = [c["carry_median"] for _, c in recent if c.get("carry_median") is not None]
+        std_pts = [(c["carry_std"], c["n_clean"]) for _, c in recent if c.get("carry_std") is not None]
+        std = sum(v * n for v, n in std_pts) / sum(n for _, n in std_pts) if std_pts else None
+        last_date, last = recent[-1]
+        range_txt = f"{min(medians):.0f}~{max(medians):.0f}m" if len(medians) > 1 else (f"{medians[0]:.0f}m" if medians else "-")
+        n_txt = f"{n_total}구 · {len(recent)}세션" + (" (표본부족)" if n_total < 10 else "")
+        rows.append(
+            f"<tr><td>{club}</td><td>{avg:.0f}m</td><td>{'±' + format(std, '.0f') + 'm' if std is not None else '-'}</td>"
+            f"<td>{range_txt}</td><td>{last['carry_avg']:.0f}m <span class='n-note'>({fmt_ko_date(last_date)}, {last['n_clean']}구)</span></td>"
+            f"<td class='n-note'>{n_txt}</td></tr>"
+        )
+    if not rows:
+        return ""
+    return f"""
+  <div class="section">
+    <h2>클럽별 캐리표</h2>
+    <p class="section-desc">클럽마다 그 클럽을 친 최근 {CARRY_TABLE_SESSIONS}세션의 클린 샷 기준. 캐리는 클린 샷수 가중평균, ±는 세션 안 흩어짐(표준편차) 평균,
+    범위는 세션별 중앙값의 최소~최대. 합산 10구 미만은 표본부족. 웨지는 어프로치 연습 샷이 섞여 있어 아래 "웨지 거리표 검증"에서 샷 단위로 따로 봄.</p>
+    <div class="table-scroll card">
+      <table>
+        <thead><tr><th>클럽</th><th>캐리</th><th>흩어짐</th><th>세션 중앙값 범위</th><th>최근 세션</th><th>표본</th></tr></thead>
+        <tbody>{''.join(rows)}</tbody>
+      </table>
+    </div>
+  </div>"""
+
+
+WEDGE_LABELS = {"피칭웨지": "P", "갭웨지": "50도", "샌드웨지": "56도", "로브웨지": "60도"}
+
+
+def _carry_summary(carries):
+    """샷 캐리 목록 -> '중앙값 (사분위 범위)' 문자열. 4구 미만이면 사분위 생략."""
+    if not carries:
+        return "-", None
+    med = st.median(carries)
+    if len(carries) >= 4:
+        q1, _, q3 = st.quantiles(carries, n=4)
+        return f"{med:.0f}m <span class='n-note'>({q1:.0f}~{q3:.0f})</span>", med
+    return f"{med:.0f}m", med
+
+
+def build_wedge_table(sessions):
+    """사용자 기준 거리표 대비 실측 웨지 캐리. 샷 단위로 풀샷/컨트롤/어프로치를 나눈 wedge_split을
+    클럽마다 그 클럽을 친 최근 CARRY_TABLE_SESSIONS세션에 걸쳐 합산한다."""
+    rows = []
+    ordered = sorted(sessions, key=lambda s: (s["date"], s["time_start"]))
+    for club, ref in WEDGE_REFERENCE.items():
+        splits = [s["clubs"][club]["wedge_split"] for s in ordered
+                  if club in s["clubs"] and "wedge_split" in s["clubs"][club]][-CARRY_TABLE_SESSIONS:]
+        if not splits:
+            continue
+        full = [c for sp in splits for c in sp["full"]]
+        control = [c for sp in splits for c in sp["control"]]
+        n_approach = sum(sp["n_approach"] for sp in splits)
+        n_outlier = sum(sp["n_outlier"] for sp in splits)
+        full_min, control_min, _ = wedge_bands(club)
+
+        full_lo, full_hi = ref["full"]
+        ref_full = f"{full_lo}m" if full_lo == full_hi else f"{full_lo}~{full_hi}m"
+        full_txt, full_med = _carry_summary(full)
+        if full_med is not None:
+            diff = full_med - full_lo if full_med < full_lo else (full_med - full_hi if full_med > full_hi else 0)
+            diff_txt = "기준 안" if diff == 0 else f"{diff:+.0f}m"
+            full_txt += f" · {diff_txt}"
+        full_txt += f" <span class='n-note'>{len(full)}구" + (" 표본부족" if len(full) < 5 else "") + "</span>"
+
+        if ref["control"] is not None:
+            ctrl_txt, ctrl_med = _carry_summary(control)
+            if ctrl_med is not None:
+                ctrl_txt += f" · {ctrl_med - ref['control']:+.0f}m"
+            ctrl_txt += f" <span class='n-note'>{len(control)}구" + (" 표본부족" if len(control) < 5 else "") + "</span>"
+            ref_ctrl = f"{ref['control']}m"
+            band_txt = f"풀 ≥{full_min:.0f} · 컨트롤 {control_min:.0f}~{full_min:.0f}"
+        else:
+            ctrl_txt, ref_ctrl = "-", "-"
+            band_txt = f"풀 ≥{full_min:.0f}"
+
+        rows.append(
+            f"<tr><td>{WEDGE_LABELS.get(club, club)} <span class='n-note'>{club}</span></td>"
+            f"<td>{ref_full}</td><td>{full_txt}</td><td>{ref_ctrl}</td><td>{ctrl_txt}</td>"
+            f"<td>{n_approach}구" + (f" <span class='n-note'>(이상치 {n_outlier})</span>" if n_outlier else "") + "</td>"
+            f"<td class='n-note'>{band_txt} · {len(splits)}세션</td></tr>"
+        )
+    if not rows:
+        return ""
+    return f"""
+  <div class="section">
+    <h2>웨지 거리표 검증</h2>
+    <p class="section-desc">내 거리표(기준) 대비 실측 캐리. 짧은 웨지 샷은 미스샷이 아니라 어프로치 연습이므로 샷마다 풀샷/컨트롤/어프로치로 나눠 집계
+    (클럽마다 그 클럽을 친 최근 {CARRY_TABLE_SESSIONS}세션 합산). 값은 중앙값, 괄호는 가운데 50% 범위, 뒤의 ±는 기준과의 차이.
+    분류 경계: 컨트롤 기준이 있으면 풀샷 하한 = 컨트롤과 풀샷 기준의 중간, 컨트롤 하한 = 컨트롤 기준 -{WEDGE_CONTROL_MARGIN}m,
+    컨트롤 기준이 없으면 풀샷 하한 = 풀샷 기준의 {int(WEDGE_FULL_RATIO*100)}%. 그 아래는 어프로치로 세고 캐리 계산에서 뺌.
+    풀샷 기준의 {int(WEDGE_OUTLIER_RATIO*100)}% 초과는 클럽 선택 오류로 보고 제외(이상치).</p>
+    <div class="table-scroll card">
+      <table>
+        <thead><tr><th>클럽</th><th>풀샷 기준</th><th>풀샷 실측</th><th>컨트롤 기준</th><th>컨트롤 실측</th><th>어프로치</th><th>분류 경계</th></tr></thead>
+        <tbody>{''.join(rows)}</tbody>
+      </table>
+    </div>
+  </div>"""
 
 
 def build_session_table(session):
@@ -360,14 +529,9 @@ def build_session_table(session):
         def f1(v, suffix=""):
             return f"{v:.1f}{suffix}" if v is not None else "-"
 
-        def f_lr(v):
-            if v is None:
-                return "-"
-            return f"{abs(v):.1f}{'R' if v >= 0 else 'L'}"
-
         rows.append(
             f"<tr><td>{club}</td><td class='n-note'>{n_note}</td>"
-            f"<td>{f_lr(c['club_path_avg'])}</td>"
+            f"<td>{fmt_lr(c['club_path_avg'])}</td>"
             f"<td>{f1(c['club_face_avg'])}</td>"
             f"<td>{f1(c['attack_angle_avg'])}</td>"
             f"<td>{f1(c['backspin_avg'])}</td>"
@@ -426,6 +590,8 @@ def build_body_html(history):
     {build_driver_trend(sessions)}
   </div>
 
+  {build_carry_table(sessions)}
+  {build_wedge_table(sessions)}
   {build_termination_section(sessions)}
   {build_iron_gap_section(sessions)}
   {build_session_details(sessions)}
@@ -558,7 +724,7 @@ PAGE_CSS = """
     --surface-1: #fcfcfb; --page: #f9f9f7;
     --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #898781;
     --grid: #e1e0d9; --baseline: #c3c2b7; --border: rgba(11,11,11,0.10);
-    --series-1: #2a78d6; --band: #cde2fb;
+    --series-1: #2a78d6; --series-2: #d9621f; --band: #cde2fb;
     --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
   }
   @media (prefers-color-scheme: dark) {
@@ -567,7 +733,7 @@ PAGE_CSS = """
       --surface-1: #1a1a19; --page: #0d0d0d;
       --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
       --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
-      --series-1: #3987e5; --band: #184f95;
+      --series-1: #3987e5; --series-2: #f08a4b; --band: #184f95;
     }
   }
   :root[data-theme="dark"] .viz-root {
@@ -575,7 +741,7 @@ PAGE_CSS = """
     --surface-1: #1a1a19; --page: #0d0d0d;
     --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
     --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
-    --series-1: #3987e5; --band: #184f95;
+    --series-1: #3987e5; --series-2: #f08a4b; --band: #184f95;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--page); }
@@ -609,7 +775,8 @@ PAGE_CSS = """
   .viz-root th, .viz-root td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .viz-root th:first-child, .viz-root td:first-child { text-align: left; font-variant-numeric: normal; }
   .viz-root th { color: var(--text-muted); font-weight: 500; font-size: 12px; }
-  .viz-root td.n-note { color: var(--text-muted); font-size: 11px; }
+  .viz-root td.n-note, .viz-root span.n-note { color: var(--text-muted); font-size: 11px; }
+  .viz-root tr.muted-row td { color: var(--text-muted); }
   .viz-root .table-scroll { overflow-x: auto; }
   .viz-root details { margin-bottom: 14px; }
   .viz-root summary { cursor: pointer; font-size: 14px; font-weight: 600; padding: 10px 0; list-style: none; display: flex; align-items: center; gap: 8px; }
